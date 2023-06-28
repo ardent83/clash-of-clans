@@ -1,9 +1,10 @@
 package model.building;
 
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public abstract class Building {
+public abstract class Building extends Node {
     public Building(BuildingType buildingType, int hitPoints,String path, double width, double height, double x, double y) {
         this.buildingType = buildingType;
         this.hitPoints = hitPoints;
