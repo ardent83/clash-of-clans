@@ -12,13 +12,15 @@ import java.util.ArrayList;
 public class Map3 extends Map {
     public Map3() {
         super(3);
+        this.capacityMap3 = 80;
+        this.buildingsMap3 = new ArrayList<>();
     }
-    private static final int capacityMap3;
-    private static final ArrayList<Node> buildingsMap3;
-    public static int getCapacityMap3() {
+    private final int capacityMap3;
+    private final ArrayList<Node> buildingsMap3;
+    public int getCapacityMap() {
         return capacityMap3;
     }
-    public static ArrayList<Node> getBuildingsMap3() {
+    public ArrayList<Node> getBuildingsMap() {
         return buildingsMap3;
     }
 
@@ -77,9 +79,5 @@ public class Map3 extends Map {
             }
         }
         return root;
-    }
-    static {
-        capacityMap3 = 80;
-        buildingsMap3 = new ArrayList<>();
     }
 }

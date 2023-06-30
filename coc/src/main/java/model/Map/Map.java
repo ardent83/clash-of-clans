@@ -1,6 +1,9 @@
 package model.Map;
 
+import javafx.scene.Node;
 import javafx.scene.layout.*;
+
+import java.util.ArrayList;
 
 public abstract class Map extends AnchorPane {
     public Map(int mapId) {
@@ -13,4 +16,6 @@ public abstract class Map extends AnchorPane {
         return mapId;
     }
     public abstract AnchorPane getMapView();
+    public abstract int getCapacityMap();
+    public abstract ArrayList<Node> getBuildingsMap();
 }

@@ -3,10 +3,18 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/archer_drag.png" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/attack.png" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/main/resources/balloon_7.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/balloon_drag.png" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/capacity.png" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/main/resources/classic.png" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources/copy.png" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources/download.gif" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/dragon_drag.png" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/end.png" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/goblin_drag.png" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/next.png" charset="windows-1252" />
     <file url="file://$PROJECT_DIR$/src/main/resources/poster1.jpg" charset="windows-1252" />
     <file url="PROJECT" charset="windows-1252" />
   </component>
