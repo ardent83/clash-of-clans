@@ -1,7 +1,6 @@
 package view;
 
 import controller.LogInController;
-import data.SavePlayerData;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -15,7 +14,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.Map.*;
 import model.Player;
 
 import java.util.ArrayList;
