@@ -28,7 +28,10 @@ public class PlayerPanel extends Application {
         Scene scene = new Scene(root(stage), 1000, 737);
         scene.getStylesheets().add("style.css");
         stage.setScene(scene);
+        stage.setTitle("Home");
+        stage.getIcons().add(new Image("icon.jpg"));
         stage.show();
+        stage.setResizable(false);
     }
 
     AnchorPane root(Stage stage){
