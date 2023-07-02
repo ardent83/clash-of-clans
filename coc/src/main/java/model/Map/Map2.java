@@ -15,6 +15,7 @@ public class Map2 extends Map {
         super(2);
         this.capacityMap2 = 60;
         this.buildingsMap2 = new ArrayList<>();
+        this.buildMap();
     }
     private final int capacityMap2;
     private final ArrayList<Node> buildingsMap2;
@@ -28,6 +29,29 @@ public class Map2 extends Map {
     public AnchorPane getMapView() {
         AnchorPane root = new AnchorPane();
         root.setBackground(new Background(new BackgroundImage(new Image("classic12.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        for (Node node : buildingsMap2) {
+            if (node instanceof Building)
+                root.getChildren().add(((Building) node).getImageView());
+        }
+        for (Node node : buildingsMap2) {
+            if (node instanceof Defensive) {
+                ((Building) node).getImageView().setOnMouseEntered(mouseEvent -> {
+                    Circle circle = new Circle(((Building) node).getImageView().getX() + ((((Building) node).getImageView().getFitWidth()) / 2),
+                            ((Building) node).getImageView().getY() + ((((Building) node).getImageView().getFitHeight()) / 2), ((Defensive) node).getRange());
+                    circle.setFill(Color.TRANSPARENT);
+                    circle.setStroke(Color.BLACK);
+                    circle.setStrokeWidth(2);
+                    root.getChildren().add(circle);
+                });
+                ((Building) node).getImageView().setOnMouseExited(mouseEvent -> {
+                    root.getChildren().remove(root.getChildren().size() - 1);
+                });
+            }
+        }
+        return root;
+    }
+
+    private void buildMap(){
         ArcherTower archerTower = new ArcherTower(460, 256);
         ArcherTower archerTower2 = new ArcherTower(360, 256);
         ArcherTower archerTower3 = new ArcherTower(560, 256);
@@ -52,26 +76,5 @@ public class Map2 extends Map {
         buildingsMap2.add(barrack);
         buildingsMap2.add(tesla1);
         buildingsMap2.add(infernoTower1);
-
-        for (Node node : buildingsMap2) {
-            if (node instanceof Building)
-                root.getChildren().add(((Building) node).getImageView());
-        }
-        for (Node node : buildingsMap2) {
-            if (node instanceof Defensive) {
-                ((Building) node).getImageView().setOnMouseEntered(mouseEvent -> {
-                    Circle circle = new Circle(((Building) node).getImageView().getX() + ((((Building) node).getImageView().getFitWidth()) / 2),
-                            ((Building) node).getImageView().getY() + ((((Building) node).getImageView().getFitHeight()) / 2), ((Defensive) node).getRange());
-                    circle.setFill(Color.TRANSPARENT);
-                    circle.setStroke(Color.BLACK);
-                    circle.setStrokeWidth(2);
-                    root.getChildren().add(circle);
-                });
-                ((Building) node).getImageView().setOnMouseExited(mouseEvent -> {
-                    root.getChildren().remove(root.getChildren().size() - 1);
-                });
-            }
-        }
-        return root;
     }
 }

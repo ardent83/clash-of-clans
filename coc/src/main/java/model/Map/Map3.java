@@ -14,6 +14,7 @@ public class Map3 extends Map {
         super(3);
         this.capacityMap3 = 80;
         this.buildingsMap3 = new ArrayList<>();
+        this.buildMap();
     }
     private final int capacityMap3;
     private final ArrayList<Node> buildingsMap3;
@@ -28,6 +29,29 @@ public class Map3 extends Map {
     public AnchorPane getMapView() {
         AnchorPane root = new AnchorPane();
         root.setBackground(new Background(new BackgroundImage(new Image("classic12.png"), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
+        for (Node node : buildingsMap3) {
+            if (node instanceof Building)
+                root.getChildren().add(((Building) node).getImageView());
+        }
+        for (Node node : buildingsMap3) {
+            if (node instanceof Defensive) {
+                ((Building) node).getImageView().setOnMouseEntered(mouseEvent -> {
+                    Circle circle = new Circle(((Building) node).getImageView().getX() + ((((Building) node).getImageView().getFitWidth()) / 2),
+                            ((Building) node).getImageView().getY() + ((((Building) node).getImageView().getFitHeight()) / 2), ((Defensive) node).getRange());
+                    circle.setFill(Color.TRANSPARENT);
+                    circle.setStroke(Color.BLACK);
+                    circle.setStrokeWidth(2);
+                    root.getChildren().add(circle);
+                });
+                ((Building) node).getImageView().setOnMouseExited(mouseEvent -> {
+                    root.getChildren().remove(root.getChildren().size() - 1);
+                });
+            }
+        }
+        return root;
+    }
+
+    private void buildMap(){
         ElixirCollector elixirCollector1 = new ElixirCollector(510, 220);
         GoldMine goldMine1 = new GoldMine(440, 221);
         ArcherTower archerTower4 = new ArcherTower(457, 160);
@@ -58,26 +82,5 @@ public class Map3 extends Map {
         buildingsMap3.add(barrack);
         buildingsMap3.add(tesla1);
         buildingsMap3.add(infernoTower1);
-
-        for (Node node : buildingsMap3) {
-            if (node instanceof Building)
-                root.getChildren().add(((Building) node).getImageView());
-        }
-        for (Node node : buildingsMap3) {
-            if (node instanceof Defensive) {
-                ((Building) node).getImageView().setOnMouseEntered(mouseEvent -> {
-                    Circle circle = new Circle(((Building) node).getImageView().getX() + ((((Building) node).getImageView().getFitWidth()) / 2),
-                            ((Building) node).getImageView().getY() + ((((Building) node).getImageView().getFitHeight()) / 2), ((Defensive) node).getRange());
-                    circle.setFill(Color.TRANSPARENT);
-                    circle.setStroke(Color.BLACK);
-                    circle.setStrokeWidth(2);
-                    root.getChildren().add(circle);
-                });
-                ((Building) node).getImageView().setOnMouseExited(mouseEvent -> {
-                    root.getChildren().remove(root.getChildren().size() - 1);
-                });
-            }
-        }
-        return root;
     }
 }

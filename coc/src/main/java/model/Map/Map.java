@@ -5,7 +5,7 @@ import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 
-public abstract class Map extends AnchorPane {
+public abstract class Map {
     public Map(int mapId) {
         this.mapId = mapId;
     }
