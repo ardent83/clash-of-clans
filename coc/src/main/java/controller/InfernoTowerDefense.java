@@ -1,6 +1,11 @@
 package controller;
 
+import javafx.application.Platform;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.LineTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
 import model.Map.Map;
 import model.building.InfernoTower;
 import model.hero.Hero;
@@ -14,16 +19,12 @@ public class InfernoTowerDefense extends Thread {
         this.root = root;
         this.map = map;
         this.infernoTower = infernoTower;
-        this.xCenter = (infernoTower.getImageView().getX() + ((infernoTower.getImageView().getFitWidth())/2));
-        this.yCenter = (infernoTower.getImageView().getY() + ((infernoTower.getImageView().getFitHeight())/2));
     }
 
     private boolean isDestroyed;
     private final AnchorPane root;
     private final Map map;
     private final InfernoTower infernoTower;
-    private final double xCenter;
-    private final double yCenter;
     @Override
     public synchronized void run() {
         while (!isDestroyed) {
@@ -38,8 +39,8 @@ public class InfernoTowerDefense extends Thread {
         double width;
         Hero hero = null;
         for (Hero attackingHero : new ArrayList<>(map.getAttackingHeroes())) {
-            width = Math.sqrt((Math.pow(infernoTower.getImageView().getX() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getMinX(), 2))
-                    + Math.pow(infernoTower.getImageView().getY() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getMinY(), 2));
+            width = Math.sqrt((Math.pow(infernoTower.getImageView().getX() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterX(), 2))
+                    + Math.pow(infernoTower.getImageView().getY() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterY(), 2));
             if (width < infernoTower.getRange()) {
                 hero = attackingHero;
             }
@@ -57,20 +58,65 @@ public class InfernoTowerDefense extends Thread {
         return hero;
     }
     private synchronized void attack(Hero hero){
+        Path path = new Path();
+        path.setStroke(Color.web("#FF6F00"));
+        path.setStrokeWidth(3);
+        MoveTo moveTo = new MoveTo(infernoTower.getImageView().getX()+26.4, infernoTower.getImageView().getY()+13.6);
+        LineTo lineTo = new LineTo(hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterX(),hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterY());
+        path.getElements().addAll(moveTo, lineTo);
+        Platform.runLater(() -> {
+            root.getChildren().add(path);
+        });
+
         while (hero.getHitPoints() >= 0){
             if (infernoTower.getHitPoints() <= 0) {
                 isDestroyed = true;
                 break;
             }
-            hero.setHitPoints(hero.getHitPoints() - (infernoTower.getDamagePerSecond()));
-            try {
-                wait(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            lineTo = new LineTo(hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterX(),hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterY());
+            if (Math.sqrt(Math.pow(moveTo.getX()-lineTo.getX(), 2)+ Math.pow(moveTo.getY()-lineTo.getY(), 2)) < infernoTower.getRange()){
+                path.getElements().clear();
+                path.getElements().addAll(moveTo, lineTo);
+                Platform.runLater(() -> {
+                    root.getChildren().remove(path);
+                    root.getChildren().add(path);
+                });
+                hero.setHitPoints(hero.getHitPoints() - (infernoTower.getDamagePerSecond()));
+                try {
+                    wait(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                Platform.runLater(() -> {
+                    root.getChildren().remove(path);
+                });
+                try {
+                    wait(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
+        Platform.runLater(() -> {
+            root.getChildren().remove(path);
+        });
     }
     public synchronized void myNotify(){
         notify();
+    }
+    public synchronized void myWait(){
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public synchronized void myWait(long timeMillis){
+        try {
+            wait(timeMillis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
