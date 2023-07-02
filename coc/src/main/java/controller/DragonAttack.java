@@ -49,9 +49,7 @@ public class DragonAttack extends Thread {
                 attack(building);
             }
             map.getAttackingHeroes().remove(dragon);
-            System.out.println("died");
         }
-
     }
     private synchronized Building moveToward(){
         double widthLowe = 10000;
