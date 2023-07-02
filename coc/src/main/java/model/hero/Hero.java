@@ -7,7 +7,7 @@ import model.building.BuildingType;
 
 import java.util.ArrayList;
 
-public class Hero extends Node {
+public abstract class Hero extends Node {
     public Hero(int hitPoints, int housingSpace, int damagePerSecond, int rang, int movementSpeed, BuildingType favoriteTarget, double width, double height, double x, double y, String ... paths) {
         this.hitPoints = hitPoints;
         this.housingSpace = housingSpace;
@@ -33,6 +33,15 @@ public class Hero extends Node {
     private final int movementSpeed;
     private final BuildingType favoriteTarget;
     private final ArrayList<ImageView> imageViews;
+    private ImageView viewHero;
+
+    public ImageView getViewHero() {
+        return viewHero;
+    }
+
+    public void setViewHero(ImageView viewHero) {
+        this.viewHero = viewHero;
+    }
 
     public int getHitPoints() {
         return hitPoints;
