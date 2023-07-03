@@ -33,6 +33,12 @@ public class CheckResultAttack extends Thread {
             if (defensivePlayer.getMap().getBuildingsMap().size() == 0){
                 defensivePlayer.setNumberLose(defensivePlayer.getNumberLose()+1);
                 attackingPlayer.setNumberWin(attackingPlayer.getNumberWin()+1);
+                if (defensivePlayer.getLevel() > 1){
+                    defensivePlayer.setLevel(defensivePlayer.getLevel()-1);
+                }
+                if (attackingPlayer.getLevel() < 4){
+                    attackingPlayer.setLevel(attackingPlayer.getLevel()+1);
+                }
                 new UpdatePlayerData(attackingPlayer).start();
                 new UpdatePlayerData(defensivePlayer).start();
                 Platform.runLater(() -> {
@@ -43,6 +49,12 @@ public class CheckResultAttack extends Thread {
             } else if (capacityInt.get() == 0 && defensivePlayer.getMap().getAttackingHeroes().size() == 0){
                 defensivePlayer.setNumberWin(defensivePlayer.getNumberWin()+1);
                 attackingPlayer.setNumberLose(attackingPlayer.getNumberLose()+1);
+                if (defensivePlayer.getLevel() < 4){
+                    defensivePlayer.setLevel(defensivePlayer.getLevel()+1);
+                }
+                if (attackingPlayer.getLevel() > 1){
+                    attackingPlayer.setLevel(attackingPlayer.getLevel()-1);
+                }
                 new UpdatePlayerData(attackingPlayer).start();
                 new UpdatePlayerData(defensivePlayer).start();
                 Platform.runLater(() -> {

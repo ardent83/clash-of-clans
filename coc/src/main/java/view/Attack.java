@@ -65,18 +65,6 @@ public class Attack extends Application {
     private AnchorPane attack(Stage stage){
         AnchorPane map = defensivePlayer.getMap().getMapView();
 
-        ImageView imageViewBack = new ImageView("end.png");
-        imageViewBack.setX(20);
-        imageViewBack.setY(590);
-        imageViewBack.setFitWidth(100);
-        imageViewBack.setFitHeight(40);
-        imageViewBack.setOnMouseClicked(mouseEvent -> {
-            if (mouseEvent.getClickCount() == 2){
-                new PlayerPanel(attackingPlayer, players).start(new Stage());
-                stage.close();
-            }
-        });
-
         ImageView imageViewDragon = new ImageView("dragon_drag.png");
         imageViewDragon.setX(20);
         imageViewDragon.setY(640);
@@ -179,7 +167,7 @@ public class Attack extends Application {
             }
         });
 
-        map.getChildren().addAll(imageViewBack, rectangle, imageViewCapacity, capacity);
+        map.getChildren().addAll(rectangle, imageViewCapacity, capacity);
 
         if (attackingPlayer.getLevel() == 1){
             map.getChildren().add(imageViewDragon);
