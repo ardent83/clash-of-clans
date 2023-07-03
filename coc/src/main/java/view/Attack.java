@@ -1,6 +1,6 @@
 package view;
 
-import controller.InfernoTowerDefense;
+import controller.*;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -11,7 +11,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import controller.DragonAttack;
 import model.Player;
 import model.building.Building;
 import model.building.InfernoTower;
@@ -26,13 +25,6 @@ public class Attack extends Application {
         this.defensivePlayer = defensivePlayer;
         this.players = players;
         players.remove(defensivePlayer);
-        int count = 0;
-        for (Node building : defensivePlayer.getMap().getBuildingsMap()){
-            if (building instanceof InfernoTower){
-                new InfernoTowerDefense(defensivePlayer.getMap().getMapView(), defensivePlayer.getMap(),(InfernoTower) building).start();
-                System.out.println(count++);
-            }
-        }
     }
     @Override
     public void start(Stage stage) {
@@ -41,6 +33,11 @@ public class Attack extends Application {
         stage.setScene(scene);
         stage.show();
         stage.setResizable(false);
+        for (Node building : defensivePlayer.getMap().getBuildingsMap()){
+            if (building instanceof InfernoTower){
+                new InfernoTowerDefense(root, defensivePlayer.getMap(),(InfernoTower) building).start();
+            }
+        }
     }
     private final static DropShadow shadow = new DropShadow(10,Color.GOLD);
 
@@ -137,24 +134,21 @@ public class Attack extends Application {
 
         map.setOnMouseClicked(mouseEvent -> {
             if (imageViewBalloon.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 10){
-                map.getChildren().add(new DefBalloon(mouseEvent.getX()-30, mouseEvent.getY()-35).getImageViews().get(0));
                 capacityInt.addAndGet(-10);
                 capacity.setText("Capacity : " + capacityInt);
+                new DefBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
             } else if (imageViewArcher.getEffect() != null  && mouseEvent.getY() < 575 && capacityInt.get() >= 30){
-                map.getChildren().add(new ArcherBalloon(mouseEvent.getX()-30, mouseEvent.getY()-40).getImageViews().get(0));
                 capacityInt.addAndGet(-30);
                 capacity.setText("Capacity : " + capacityInt);
+                new ArcherBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
             } else if (imageViewGoblin.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 2){
-                map.getChildren().add(new GoblinBalloon(mouseEvent.getX()-30, mouseEvent.getY()-40).getImageViews().get(0));
                 capacityInt.addAndGet(-2);
                 capacity.setText("Capacity : " + capacityInt);
+                new GoblinBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
             } else if (imageViewDragon.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 20){
                 capacityInt.addAndGet(-20);
                 capacity.setText("Capacity : " + capacityInt);
-                DragonAttack dragonAttack = new DragonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap());
-                Thread threadDragonAttack = new Thread(dragonAttack);
-                threadDragonAttack.start();
-
+                new DragonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
             }
             if (capacityInt.get() < 30){
                 map.getChildren().remove(imageViewArcher);
