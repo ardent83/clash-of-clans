@@ -57,7 +57,8 @@ public class LogIn extends Application {
         buttonLogin.setOnMouseClicked(mouseEvent -> {
             try {
                 Player player = controller.getPlayer(textFieldID.getText(), textFieldPassword.getText());
-                // new playerPanel();
+                new PlayerPanel(player, players).start(new Stage());
+                stage.close();
             } catch (Exception e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setContentText(e.getMessage());

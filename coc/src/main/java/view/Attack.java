@@ -1,7 +1,7 @@
 package view;
 
 import controller.attack.*;
-import controller.checkResultAttack;
+import controller.CheckResultAttack;
 import controller.defense.ArcherTowerDefense;
 import controller.defense.InfernoTowerDefense;
 import controller.defense.TeslaDefense;
@@ -42,7 +42,7 @@ public class Attack extends Application {
         stage.getIcons().add(new Image("icon.jpg"));
         stage.setTitle("Attack");
         stage.setResizable(false);
-        new checkResultAttack(stage, attackingPlayer, defensivePlayer, capacityInt, players).start();
+        new CheckResultAttack(stage, attackingPlayer, defensivePlayer, capacityInt, players).start();
         synchronized (this){
             for (Node building : defensivePlayer.getMap().getBuildingsMap()){
                 if (building instanceof InfernoTower){

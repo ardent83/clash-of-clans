@@ -78,7 +78,8 @@ public class SignUp extends Application {
                 }
                 Player player = new Player(textFieldID.getText(), textFieldPassword.getText(), map);
                 new SavePlayerData(player).start();
-                // new PlayerPanel();
+                new PlayerPanel(player,players).start(new Stage());
+                stage.close();
             }
             catch (Exception e){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
