@@ -1,10 +1,15 @@
 package view;
 
-import controller.*;
+import controller.attack.*;
+import controller.checkResultAttack;
+import controller.defense.ArcherTowerDefense;
+import controller.defense.InfernoTowerDefense;
+import controller.defense.TeslaDefense;
 import javafx.application.Application;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
@@ -12,9 +17,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Player;
-import model.building.Building;
+import model.building.ArcherTower;
 import model.building.InfernoTower;
-import model.hero.*;
+import model.building.Tesla;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -24,6 +29,7 @@ public class Attack extends Application {
         this.attackingPlayer = attackingPlayer;
         this.defensivePlayer = defensivePlayer;
         this.players = players;
+        this.capacityInt = new AtomicInteger(defensivePlayer.getMap().getCapacityMap());
         players.remove(defensivePlayer);
     }
     @Override
@@ -31,11 +37,21 @@ public class Attack extends Application {
         AnchorPane root = attack(stage);
         Scene scene = new Scene(root, 1000, 737);
         stage.setScene(scene);
+        scene.getStylesheets().add("style.css");
         stage.show();
+        stage.getIcons().add(new Image("icon.jpg"));
+        stage.setTitle("Attack");
         stage.setResizable(false);
-        for (Node building : defensivePlayer.getMap().getBuildingsMap()){
-            if (building instanceof InfernoTower){
-                new InfernoTowerDefense(root, defensivePlayer.getMap(),(InfernoTower) building).start();
+        new checkResultAttack(stage, attackingPlayer, defensivePlayer, capacityInt, players).start();
+        synchronized (this){
+            for (Node building : defensivePlayer.getMap().getBuildingsMap()){
+                if (building instanceof InfernoTower){
+                    new InfernoTowerDefense(root, defensivePlayer.getMap(),(InfernoTower) building, capacityInt).start();
+                } else if (building instanceof ArcherTower){
+                    new ArcherTowerDefense(root, defensivePlayer.getMap(),(ArcherTower) building, capacityInt).start();
+                } else if (building instanceof Tesla){
+                    new TeslaDefense(root, defensivePlayer.getMap(), (Tesla) building, capacityInt).start();
+                }
             }
         }
     }
@@ -44,6 +60,7 @@ public class Attack extends Application {
     private final Player attackingPlayer;
     private final Player defensivePlayer;
     private final ArrayList<Player> players;
+    private final AtomicInteger capacityInt;
 
     private AnchorPane attack(Stage stage){
         AnchorPane map = defensivePlayer.getMap().getMapView();
@@ -88,9 +105,7 @@ public class Attack extends Application {
         Rectangle rectangle = new Rectangle(0, 635, 1000, 737-635);
         rectangle.setFill(Color.rgb(0,0,0,0.4));
 
-        AtomicInteger capacityInt = new AtomicInteger(defensivePlayer.getMap().getCapacityMap());
-
-        Text capacity = new Text("Capacity : " + capacityInt);
+        Text capacity = new Text("Capacity : " + capacityInt.get());
         capacity.setId("text");
         capacity.setX(810);
         capacity.setY(50);
@@ -175,13 +190,6 @@ public class Attack extends Application {
         } else if (attackingPlayer.getLevel() == 4){
             map.getChildren().addAll(imageViewBalloon, imageViewGoblin, imageViewArcher, imageViewDragon);
         }
-
         return map;
-    }
-    public void removeHero(AnchorPane root, Hero hero){
-        root.getChildren().remove(hero.getImageViews().get(0));
-    }
-    public void removeBuilding(AnchorPane root, Building building){
-        root.getChildren().remove(building.getImageView());
     }
 }
