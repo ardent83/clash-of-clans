@@ -1,4 +1,4 @@
-package controller;
+package controller.attack;
 
 import javafx.animation.PathTransition;
 import javafx.application.Platform;
@@ -12,18 +12,18 @@ import javafx.util.Duration;
 import model.Map.Map;
 import model.MyImageView;
 import model.building.Building;
-import model.hero.GoblinBalloon;
+import model.hero.DefBalloon;
 
-public class GoblinBalloonAttack extends Thread {
-    public GoblinBalloonAttack(double x, double y, AnchorPane root, Map map) {
+public class DefBalloonAttack extends Thread {
+    public DefBalloonAttack(double x, double y, AnchorPane root, Map map) {
         this.root = root;
-        this.goblinBalloon = new GoblinBalloon(x,y);
-        this.viewBalloonMove = new MyImageView(goblinBalloon.getImageViews().get(0));
-        this.viewBalloonAttack = new MyImageView(goblinBalloon.getImageViews().get(1));
+        this.defBalloon = new DefBalloon(x,y);
+        this.viewBalloonMove = new MyImageView(defBalloon.getImageViews().get(0));
+        this.viewBalloonAttack = new MyImageView(defBalloon.getImageViews().get(1));
         this.viewBalloon = new MyImageView(viewBalloonMove);
         this.map = map;
-        goblinBalloon.setViewHero(viewBalloon);
-        this.map.getAttackingHeroes().add(goblinBalloon);
+        defBalloon.setViewHero(viewBalloon);
+        this.map.getAttackingHeroes().add(defBalloon);
         this.isDied = false;
         Platform.runLater(() -> root.getChildren().add(viewBalloon));
     }
@@ -31,7 +31,7 @@ public class GoblinBalloonAttack extends Thread {
     private final ImageView viewBalloonAttack;
     private final ImageView viewBalloonMove;
     private final ImageView viewBalloon;
-    private final GoblinBalloon goblinBalloon;
+    private final DefBalloon defBalloon;
     private final Map map;
     private boolean isDied;
 
@@ -44,7 +44,7 @@ public class GoblinBalloonAttack extends Thread {
                     break;
                 attack(building);
             }
-            map.getAttackingHeroes().remove(goblinBalloon);
+            map.getAttackingHeroes().remove(defBalloon);
         }
     }
     private synchronized Building moveToward(){
@@ -53,7 +53,7 @@ public class GoblinBalloonAttack extends Thread {
         Building building = null;
         for (Node node : map.getBuildingsMap()){
             if (node instanceof Building){
-                if (((Building) node).getBuildingType().equals(goblinBalloon.getFavoriteTarget())){
+                if (((Building) node).getBuildingType().equals(defBalloon.getFavoriteTarget())){
                     width = Math.sqrt((Math.pow(viewBalloon.getX()-((Building) node).getImageView().getX(),2))+Math.pow(viewBalloon.getY()-((Building) node).getImageView().getY(),2));
                     if(width < widthLowe){
                         widthLowe = width;
@@ -93,7 +93,7 @@ public class GoblinBalloonAttack extends Thread {
             Path path = new Path();
             path.getElements().addAll(moveTo, lineTo);
             PathTransition transition = new PathTransition();
-            transition.setDuration(Duration.millis((widthLowe/goblinBalloon.getMovementSpeed())*400));
+            transition.setDuration(Duration.millis((widthLowe/defBalloon.getMovementSpeed())*400));
             transition.setCycleCount(1);
             transition.setNode(viewBalloon);
             transition.setAutoReverse(false);
@@ -101,8 +101,8 @@ public class GoblinBalloonAttack extends Thread {
             transition.play();
             long startTime = System.currentTimeMillis();
             long elapsedTime = 0;
-            while (elapsedTime < (long) ((widthLowe/goblinBalloon.getMovementSpeed())*300)) {
-                if (goblinBalloon.getHitPoints() <= 0){
+            while (elapsedTime < (long) ((widthLowe/defBalloon.getMovementSpeed())*300)) {
+                if (defBalloon.getHitPoints() <= 0){
                     isDied = true;
                     Platform.runLater(() -> root.getChildren().remove(viewBalloon));
                     break;
@@ -128,16 +128,12 @@ public class GoblinBalloonAttack extends Thread {
             e.printStackTrace();
         }
         while (building.getHitPoints() >= 0){
-            if (goblinBalloon.getHitPoints() <= 0){
+            if (defBalloon.getHitPoints() <= 0){
                 isDied = true;
                 Platform.runLater(() -> root.getChildren().remove(viewBalloon));
                 break;
             }
-            if (building.getBuildingType().equals(goblinBalloon.getFavoriteTarget())){
-                building.setHitPoints(building.getHitPoints()-(goblinBalloon.getDamagePerSecond()*5));
-            } else {
-                building.setHitPoints(building.getHitPoints()-goblinBalloon.getDamagePerSecond());
-            }
+            building.setHitPoints(building.getHitPoints()-defBalloon.getDamagePerSecond());
             try {
                 wait(1000);
             } catch (InterruptedException e) {

@@ -1,4 +1,4 @@
-package controller;
+package controller.attack;
 
 import javafx.animation.PathTransition;
 import javafx.application.Platform;

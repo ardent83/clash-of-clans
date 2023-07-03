@@ -1,4 +1,4 @@
-package controller;
+package controller.defense;
 
 import javafx.application.Platform;
 import javafx.scene.layout.AnchorPane;
@@ -7,24 +7,28 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import model.Map.Map;
+import model.building.ArcherTower;
 import model.building.InfernoTower;
 import model.hero.Hero;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class InfernoTowerDefense extends Thread {
-    public InfernoTowerDefense(AnchorPane root, Map map, InfernoTower infernoTower) {
+    public InfernoTowerDefense(AnchorPane root, Map map, InfernoTower infernoTower, AtomicInteger capacityInt) {
         this.isDestroyed = false;
         this.root = root;
         this.map = map;
         this.infernoTower = infernoTower;
+        this.capacityInt = capacityInt;
     }
 
     private boolean isDestroyed;
     private final AnchorPane root;
     private final Map map;
     private final InfernoTower infernoTower;
+    private final AtomicInteger capacityInt;
     @Override
     public synchronized void run() {
         while (!isDestroyed) {
@@ -45,7 +49,7 @@ public class InfernoTowerDefense extends Thread {
                 hero = attackingHero;
             }
         }
-        if (map.getBuildingsMap().size() == 0 || infernoTower.getHitPoints() <= 0) {
+        if (map.getBuildingsMap().size() == 0 || infernoTower.getHitPoints() <= 0 || (map.getAttackingHeroes().size() == 0 && capacityInt.get() == 0)) {
             isDestroyed = true;
         }
         if (!isDestroyed && hero == null){
@@ -69,7 +73,7 @@ public class InfernoTowerDefense extends Thread {
         });
 
         while (hero.getHitPoints() >= 0){
-            if (infernoTower.getHitPoints() <= 0) {
+            if (infernoTower.getHitPoints() <= 0 || (map.getAttackingHeroes().size() == 0 && capacityInt.get() == 0)) {
                 isDestroyed = true;
                 break;
             }
