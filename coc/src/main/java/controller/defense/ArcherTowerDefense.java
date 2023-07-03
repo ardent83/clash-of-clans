@@ -44,10 +44,12 @@ public class ArcherTowerDefense extends Thread {
         double width;
         Hero hero = null;
         for (Hero attackingHero : new ArrayList<>(map.getAttackingHeroes())) {
-            width = Math.sqrt((Math.pow(archerTower.getImageView().getX() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterX(), 2))
-                    + Math.pow(archerTower.getImageView().getY() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterY(), 2));
-            if (width < archerTower.getRange()) {
-                hero = attackingHero;
+            if (root.getChildren().contains(attackingHero.getViewHero())){
+                width = Math.sqrt((Math.pow(archerTower.getImageView().getX() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterX(), 2))
+                        + Math.pow(archerTower.getImageView().getY() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterY(), 2));
+                if (width < archerTower.getRange()) {
+                    hero = attackingHero;
+                }
             }
         }
         if (map.getBuildingsMap().size() == 0 || archerTower.getHitPoints() <= 0 || (map.getAttackingHeroes().size() == 0 && capacityInt.get() == 0)) {
@@ -72,31 +74,33 @@ public class ArcherTowerDefense extends Thread {
                 break;
             }
             Platform.runLater(() -> root.getChildren().add(circle));
-            LineTo lineTo = new LineTo(hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterX(),hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterY());
-            if (Math.sqrt(Math.pow(moveTo.getX()-lineTo.getX(), 2)+ Math.pow(moveTo.getY()-lineTo.getY(), 2)) < archerTower.getRange()){
-                path.getElements().clear();
-                path.getElements().addAll(moveTo, lineTo);
-                PathTransition pathTransition = new PathTransition(Duration.millis(1000),path);
-                pathTransition.setCycleCount(1);
-                pathTransition.setNode(circle);
-                pathTransition.play();
-                hero.setHitPoints(hero.getHitPoints() - (archerTower.getDamagePerSecond()));
-                try {
-                    wait(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Platform.runLater(() -> {
-                    root.getChildren().remove(circle);
-                });
-            } else {
-                Platform.runLater(() -> {
-                    root.getChildren().remove(circle);
-                });
-                try {
-                    wait(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            if (root.getChildren().contains(hero.getViewHero())){
+                LineTo lineTo = new LineTo(hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterX(),hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterY());
+                if (Math.sqrt(Math.pow(moveTo.getX()-lineTo.getX(), 2)+ Math.pow(moveTo.getY()-lineTo.getY(), 2)) < archerTower.getRange()){
+                    path.getElements().clear();
+                    path.getElements().addAll(moveTo, lineTo);
+                    PathTransition pathTransition = new PathTransition(Duration.millis(1000),path);
+                    pathTransition.setCycleCount(1);
+                    pathTransition.setNode(circle);
+                    pathTransition.play();
+                    hero.setHitPoints(hero.getHitPoints() - (archerTower.getDamagePerSecond()));
+                    try {
+                        wait(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Platform.runLater(() -> {
+                        root.getChildren().remove(circle);
+                    });
+                } else {
+                    Platform.runLater(() -> {
+                        root.getChildren().remove(circle);
+                    });
+                    try {
+                        wait(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
