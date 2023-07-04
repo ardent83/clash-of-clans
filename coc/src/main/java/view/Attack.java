@@ -42,7 +42,7 @@ public class Attack extends Application {
         stage.getIcons().add(new Image("icon.jpg"));
         stage.setTitle("Attack");
         stage.setResizable(false);
-        new CheckResultAttack(stage, attackingPlayer, defensivePlayer, capacityInt, players).start();
+        new CheckResultAttack(stage, root, attackingPlayer, defensivePlayer, capacityInt, players).start();
         synchronized (this){
             for (Node building : defensivePlayer.getMap().getBuildingsMap()){
                 if (building instanceof InfernoTower){
