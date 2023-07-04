@@ -11,6 +11,9 @@ import javafx.stage.Stage;
 import model.Map.Map;
 import model.Map.Map4;
 import model.Player;
+import model.hero.ArcherBalloon;
+import model.hero.DefBalloon;
+import model.hero.Dragon;
 import model.hero.GoblinBalloon;
 
 import java.util.ArrayList;
@@ -101,6 +104,75 @@ public class PlayerPanel extends Application {
         textLose.setY(50);
 
         root.getChildren().addAll(winView, textWin, loseView, textLose);
+
+
+        ImageView infoDragon = new ImageView("dragon_drag.png");
+        ImageView infoBalloon = new ImageView("balloon_drag.png");
+        ImageView infoGoblin = new ImageView("goblin_drag.png");
+        ImageView infoArcher = new ImageView("archer_drag.png");
+        infoDragon.setX(920);
+        infoDragon.setY(120);
+        infoBalloon.setX(920);
+        infoBalloon.setY(175);
+        infoGoblin.setX(920);
+        infoGoblin.setY(230);
+        infoArcher.setX(920);
+        infoArcher.setY(285);
+        infoDragon.setFitWidth(45);
+        infoDragon.setFitHeight(50);
+        infoBalloon.setFitWidth(45);
+        infoBalloon.setFitHeight(50);
+        infoGoblin.setFitWidth(45);
+        infoGoblin.setFitHeight(50);
+        infoArcher.setFitWidth(45);
+        infoArcher.setFitHeight(50);
+
+        root.getChildren().addAll(infoDragon, infoBalloon, infoGoblin, infoArcher);
+
+        ImageView infoPage = new ImageView();
+        infoPage.setX(500);
+        infoPage.setY(120);
+        infoPage.setFitWidth(400);
+        infoPage.setFitHeight(269);
+
+        Text infoText = new Text();
+        infoText.setId("textInfo");
+        infoText.setX(720);
+        infoText.setY(165);
+
+        ImageView exitInfo = new ImageView();
+        exitInfo.setX(873.6);
+        exitInfo.setY(120.8);
+        exitInfo.setFitWidth(25);
+        exitInfo.setFitHeight(23);
+        root.getChildren().addAll(infoPage, infoText, exitInfo);
+
+        infoDragon.setOnMouseClicked(mouseEvent -> {
+            infoPage.setImage(new Image("dragon_info.png"));
+            infoText.setText(new Dragon(0, 0).toString());
+            exitInfo.setImage(new Image("exit_info.png"));
+        });
+        infoBalloon.setOnMouseClicked(mouseEvent -> {
+            infoPage.setImage(new Image("balloon_info.png"));
+            infoText.setText(new DefBalloon(0, 0).toString());
+            exitInfo.setImage(new Image("exit_info.png"));
+        });
+        infoGoblin.setOnMouseClicked(mouseEvent -> {
+            infoPage.setImage(new Image("goblin_info.png"));
+            infoText.setText(new GoblinBalloon(0, 0).toString());
+            exitInfo.setImage(new Image("exit_info.png"));
+        });
+        infoArcher.setOnMouseClicked(mouseEvent -> {
+            infoPage.setImage(new Image("archer_info.png"));
+            infoText.setText(new ArcherBalloon(0, 0).toString());
+            exitInfo.setImage(new Image("exit_info.png"));
+        });
+        exitInfo.setOnMouseClicked(mouseEvent -> {
+            infoPage.setImage(null);
+            infoText.setText(null);
+            exitInfo.setImage(null);
+        });
+
 
         return root;
     }

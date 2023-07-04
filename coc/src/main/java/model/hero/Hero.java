@@ -8,13 +8,14 @@ import model.building.BuildingType;
 import java.util.ArrayList;
 
 public abstract class Hero extends Node {
-    public Hero(int hitPoints, int housingSpace, int damagePerSecond, int rang, int movementSpeed, BuildingType favoriteTarget, double width, double height, double x, double y, String ... paths) {
+    public Hero(int hitPoints, int housingSpace, int damagePerSecond, int rang, int movementSpeed, BuildingType favoriteTarget, double width, double height, int requiredLevel, double x, double y, String ... paths) {
         this.hitPoints = hitPoints;
         this.housingSpace = housingSpace;
         this.damagePerSecond = damagePerSecond;
         this.rang = rang;
         this.movementSpeed = movementSpeed;
         this.favoriteTarget = favoriteTarget;
+        this.requiredLevel = requiredLevel;
         this.imageViews = new ArrayList<>();
         for (String path : paths){
             ImageView imageView = new ImageView(new Image(path, true));
@@ -34,6 +35,7 @@ public abstract class Hero extends Node {
     private final BuildingType favoriteTarget;
     private final ArrayList<ImageView> imageViews;
     private ImageView viewHero;
+    private final int requiredLevel;
 
     public ImageView getViewHero() {
         return viewHero;
@@ -73,5 +75,20 @@ public abstract class Hero extends Node {
 
     public ArrayList<ImageView> getImageViews() {
         return imageViews;
+    }
+    public int getRequiredLevel() {
+        return requiredLevel;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "HitPoints : " + hitPoints +
+                "\nHousing Space : " + housingSpace +
+                "\nDamage Per Second : " + damagePerSecond +
+                "\nRang : " + rang +
+                "\nMovement Speed : " + movementSpeed +
+                "\nFavorite Target : \n" + favoriteTarget +
+                "\nRequired level : " + requiredLevel;
     }
 }
