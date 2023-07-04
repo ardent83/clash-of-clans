@@ -8,7 +8,7 @@ public class Player implements Serializable {
     public Player(String idPlayer, String password, Map map) {
         this.idPlayer = idPlayer;
         this.password = password;
-        this.level = 1+((int) (Math.random() * 3.5));
+        this.level = 1;
         this.numberWin = 0;
         this.numberLose = 0;
         this.map = map;

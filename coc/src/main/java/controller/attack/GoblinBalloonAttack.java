@@ -25,7 +25,6 @@ public class GoblinBalloonAttack extends Thread {
         goblinBalloon.setViewHero(viewBalloon);
         this.map.getAttackingHeroes().add(goblinBalloon);
         this.isDied = false;
-        Platform.runLater(() -> root.getChildren().add(viewBalloon));
     }
     private final AnchorPane root;
     private final ImageView viewBalloonAttack;
@@ -38,11 +37,29 @@ public class GoblinBalloonAttack extends Thread {
     @Override
     public void run() {
         synchronized (this){
+            Platform.runLater(() -> {
+                root.getChildren().add(viewBalloon);
+                myNotify();
+            });
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             while (!isDied){
                 Building building = moveToward();
                 if (isDied)
                     break;
                 attack(building);
+            }
+            Platform.runLater(() -> {
+                root.getChildren().remove(viewBalloon);
+                myNotify();
+            });
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
             map.getAttackingHeroes().remove(goblinBalloon);
         }
@@ -104,7 +121,6 @@ public class GoblinBalloonAttack extends Thread {
             while (elapsedTime < (long) ((widthLowe/goblinBalloon.getMovementSpeed())*300)) {
                 if (goblinBalloon.getHitPoints() <= 0){
                     isDied = true;
-                    Platform.runLater(() -> root.getChildren().remove(viewBalloon));
                     break;
                 }
                 elapsedTime = System.currentTimeMillis() - startTime;
@@ -130,7 +146,6 @@ public class GoblinBalloonAttack extends Thread {
         while (building.getHitPoints() >= 0){
             if (goblinBalloon.getHitPoints() <= 0){
                 isDied = true;
-                Platform.runLater(() -> root.getChildren().remove(viewBalloon));
                 break;
             }
             if (building.getBuildingType().equals(goblinBalloon.getFavoriteTarget())){

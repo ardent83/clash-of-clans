@@ -46,7 +46,7 @@ public class CheckResultAttack extends Thread {
                     stage.close();
                 });
                 break;
-            } else if (capacityInt.get() == 0 && defensivePlayer.getMap().getAttackingHeroes().size() == 0){
+            } else if (capacityInt.get() == 0 && map.getAttackingHeroes().size() == 0){
                 defensivePlayer.setNumberWin(defensivePlayer.getNumberWin()+1);
                 attackingPlayer.setNumberLose(attackingPlayer.getNumberLose()+1);
                 if (defensivePlayer.getLevel() < 4){

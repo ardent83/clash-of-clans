@@ -28,7 +28,6 @@ public class DragonAttack extends Thread {
         dragon.setViewHero(viewDragon);
         this.map.getAttackingHeroes().add(dragon);
         this.isDied = false;
-        Platform.runLater(() -> root.getChildren().add(viewDragon));
     }
     private final AnchorPane root;
     private final ImageView viewDragonL;
@@ -42,11 +41,29 @@ public class DragonAttack extends Thread {
     @Override
     public void run() {
         synchronized (this){
+            Platform.runLater(() -> {
+                root.getChildren().add(viewDragon);
+                myNotify();
+            });
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             while (!isDied){
                 Building building = moveToward();
                 if (isDied)
                     break;
                 attack(building);
+            }
+            Platform.runLater(() -> {
+                root.getChildren().remove(viewDragon);
+                myNotify();
+            });
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
             map.getAttackingHeroes().remove(dragon);
         }
@@ -106,7 +123,6 @@ public class DragonAttack extends Thread {
             while (elapsedTime < (long) ((widthLowe/dragon.getMovementSpeed())*300)) {
                 if (dragon.getHitPoints() <= 0){
                     isDied = true;
-                    Platform.runLater(() -> root.getChildren().remove(viewDragon));
                     break;
                 }
                 elapsedTime = System.currentTimeMillis() - startTime;
@@ -138,7 +154,6 @@ public class DragonAttack extends Thread {
         while (building.getHitPoints() >= 0){
             if (dragon.getHitPoints() <= 0){
                 isDied = true;
-                Platform.runLater(() -> root.getChildren().remove(viewDragon));
                 break;
             }
             building.setHitPoints(building.getHitPoints()-dragon.getDamagePerSecond());

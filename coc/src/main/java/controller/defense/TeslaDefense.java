@@ -9,6 +9,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.util.Duration;
 import model.Map.Map;
+import model.MyImageView;
 import model.building.Tesla;
 import model.hero.Hero;
 
@@ -44,8 +45,8 @@ public class TeslaDefense extends Thread {
         Hero hero = null;
         for (Hero attackingHero : new ArrayList<>(map.getAttackingHeroes())) {
             if (root.getChildren().contains(attackingHero.getViewHero())){
-                width = Math.sqrt((Math.pow(tesla.getImageView().getX() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterX(), 2))
-                        + Math.pow(tesla.getImageView().getY() - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterY(), 2));
+                width = Math.sqrt((Math.pow(tesla.getImageView().getX()+37 - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterX(), 2))
+                        + Math.pow(tesla.getImageView().getY()+18 - attackingHero.getViewHero().localToScene(attackingHero.getViewHero().getLayoutBounds()).getCenterY(), 2));
                 if (width < tesla.getRange()) {
                     hero = attackingHero;
                 }
@@ -64,49 +65,66 @@ public class TeslaDefense extends Thread {
         return hero;
     }
     private synchronized void attack(Hero hero){
-        Path path = new Path();
         MoveTo moveTo = new MoveTo(tesla.getImageView().getX()+37, tesla.getImageView().getY()+18);
+        LineTo lineTo = new LineTo(hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterX(),hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterY());
         ImageView circleImpact = new ImageView("tesla_attack.gif");
         circleImpact.setFitHeight(25);
         circleImpact.setFitWidth(42.5);
-        while (hero.getHitPoints() >= 0){
+        while (hero.getHitPoints() >= 0 && Math.sqrt(Math.pow(moveTo.getX()-lineTo.getX(), 2)+ Math.pow(moveTo.getY()-lineTo.getY(), 2)) < tesla.getRange()){
             if (tesla.getHitPoints() <= 0 || (map.getAttackingHeroes().size() == 0 && capacityInt.get() == 0)) {
                 isDestroyed = true;
                 break;
             }
-            Platform.runLater(() -> root.getChildren().add(circleImpact));
-            if (root.getChildren().contains(hero.getViewHero())){
-                LineTo lineTo = new LineTo(hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterX(),hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterY());
-                if (Math.sqrt(Math.pow(moveTo.getX()-lineTo.getX(), 2)+ Math.pow(moveTo.getY()-lineTo.getY(), 2)) < tesla.getRange()){
-                    path.getElements().clear();
-                    path.getElements().addAll(moveTo, lineTo);
-                    PathTransition pathTransition = new PathTransition(Duration.millis(1000),path);
-                    pathTransition.setCycleCount(1);
-                    pathTransition.setNode(circleImpact);
-                    pathTransition.play();
-                    hero.setHitPoints(hero.getHitPoints() - (tesla.getDamagePerSecond()));
-                    try {
-                        wait(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Platform.runLater(() -> {
-                        root.getChildren().remove(circleImpact);
-                    });
-                } else {
-                    Platform.runLater(() -> {
-                        root.getChildren().remove(circleImpact);
-                    });
-                    try {
-                        wait(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+            circleImpact = new MyImageView(circleImpact);
+            ImageView finalCircleImpact = circleImpact;
+            Platform.runLater(() -> {
+                root.getChildren().add(finalCircleImpact);
+                myNotify();
+            });
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (root.getChildren().contains(hero.getViewHero())) {
+                lineTo = new LineTo(hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterX(), hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterY());
+                Path path = new Path();
+                path.getElements().addAll(new MoveTo(moveTo.getX(), moveTo.getY()), lineTo);
+                PathTransition pathTransition = new PathTransition();
+                pathTransition.setDuration(Duration.millis(80));
+                pathTransition.setPath(path);
+                pathTransition.setCycleCount(1);
+                pathTransition.setNode(finalCircleImpact);
+                pathTransition.play();
+                hero.setHitPoints(hero.getHitPoints() - (tesla.getDamagePerSecond() * 2));
+                try {
+                    wait(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(() -> {
+                    root.getChildren().remove(finalCircleImpact);
+                    myNotify();
+                });
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
+        ImageView finalCircleImpact1 = circleImpact;
         Platform.runLater(() -> {
-            root.getChildren().remove(circleImpact);
+            root.getChildren().remove(finalCircleImpact1);
+            myNotify();
         });
+        try {
+            wait();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+    public synchronized void myNotify(){
+        notify();
     }
 }
