@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Map4 extends Map {
     public Map4() {
         super(4);
-        this.capacityMap4 = 60;
+        this.capacityMap4 = 100;
         this.buildingsMap4 = new ArrayList<>();
         this.buildMap();
     }
@@ -32,21 +32,6 @@ public class Map4 extends Map {
         for (Node node : buildingsMap4) {
             if (node instanceof Building)
                 root.getChildren().add(((Building) node).getImageView());
-        }
-        for (Node node : buildingsMap4) {
-            if (node instanceof Defensive) {
-                ((Building) node).getImageView().setOnMouseEntered(mouseEvent -> {
-                    Circle circle = new Circle(((Building) node).getImageView().getX() + ((((Building) node).getImageView().getFitWidth()) / 2),
-                            ((Building) node).getImageView().getY() + ((((Building) node).getImageView().getFitHeight()) / 2), ((Defensive) node).getRange());
-                    circle.setFill(Color.TRANSPARENT);
-                    circle.setStroke(Color.BLACK);
-                    circle.setStrokeWidth(2);
-                    root.getChildren().add(circle);
-                });
-                ((Building) node).getImageView().setOnMouseExited(mouseEvent -> {
-                    root.getChildren().remove(root.getChildren().size() - 1);
-                });
-            }
         }
         return root;
     }
