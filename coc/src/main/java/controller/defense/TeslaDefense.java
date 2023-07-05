@@ -1,5 +1,6 @@
 package controller.defense;
 
+
 import javafx.animation.PathTransition;
 import javafx.application.Platform;
 import javafx.scene.image.ImageView;
@@ -23,6 +24,9 @@ public class TeslaDefense extends Thread {
         this.map = map;
         this.tesla = tesla;
         this.capacityInt = capacityInt;
+        circleImpact = new ImageView("tesla_attack.gif");
+        circleImpact.setFitHeight(25);
+        circleImpact.setFitWidth(42.5);
     }
 
     private boolean isDestroyed;
@@ -30,6 +34,7 @@ public class TeslaDefense extends Thread {
     private final Map map;
     private final Tesla tesla;
     private final AtomicInteger capacityInt;
+     private final ImageView circleImpact;
     @Override
     public synchronized void run() {
         while (!isDestroyed) {
@@ -67,15 +72,11 @@ public class TeslaDefense extends Thread {
     private synchronized void attack(Hero hero){
         MoveTo moveTo = new MoveTo(tesla.getImageView().getX()+37, tesla.getImageView().getY()+18);
         LineTo lineTo = new LineTo(hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterX(),hero.getViewHero().localToScene(hero.getViewHero().getLayoutBounds()).getCenterY());
-        ImageView circleImpact = new ImageView("tesla_attack.gif");
-        circleImpact.setFitHeight(25);
-        circleImpact.setFitWidth(42.5);
         while (hero.getHitPoints() >= 0 && Math.sqrt(Math.pow(moveTo.getX()-lineTo.getX(), 2)+ Math.pow(moveTo.getY()-lineTo.getY(), 2)) < tesla.getRange()){
             if (tesla.getHitPoints() <= 0 || (map.getAttackingHeroes().size() == 0 && capacityInt.get() == 0)) {
                 isDestroyed = true;
                 break;
             }
-            circleImpact = new MyImageView(circleImpact);
             ImageView finalCircleImpact = circleImpact;
             Platform.runLater(() -> {
                 root.getChildren().add(finalCircleImpact);
@@ -95,7 +96,7 @@ public class TeslaDefense extends Thread {
                 pathTransition.setPath(path);
                 pathTransition.setCycleCount(1);
                 pathTransition.setNode(finalCircleImpact);
-                pathTransition.play();
+                Platform.runLater(pathTransition::play);
                 hero.setHitPoints(hero.getHitPoints() - (tesla.getDamagePerSecond() * 2));
                 try {
                     wait(500);

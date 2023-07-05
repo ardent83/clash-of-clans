@@ -117,13 +117,18 @@ public class DragonAttack extends Thread {
             transition.setNode(viewDragon);
             transition.setAutoReverse(false);
             transition.setPath(path);
-            transition.play();
+            Platform.runLater(transition::play);
             long startTime = System.currentTimeMillis();
             long elapsedTime = 0;
             while (elapsedTime < (long) ((widthLowe/dragon.getMovementSpeed())*300)) {
                 if (dragon.getHitPoints() <= 0){
                     isDied = true;
                     break;
+                }
+                try {
+                    wait(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 elapsedTime = System.currentTimeMillis() - startTime;
             }

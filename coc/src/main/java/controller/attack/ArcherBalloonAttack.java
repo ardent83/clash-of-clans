@@ -117,6 +117,11 @@ public class ArcherBalloonAttack extends Thread {
                     isDied = true;
                     break;
                 }
+                try {
+                    wait(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 elapsedTime = System.currentTimeMillis() - startTime;
             }
         }

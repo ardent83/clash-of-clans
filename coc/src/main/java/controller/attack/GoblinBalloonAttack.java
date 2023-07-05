@@ -115,13 +115,18 @@ public class GoblinBalloonAttack extends Thread {
             transition.setNode(viewBalloon);
             transition.setAutoReverse(false);
             transition.setPath(path);
-            transition.play();
+            Platform.runLater(transition::play);
             long startTime = System.currentTimeMillis();
             long elapsedTime = 0;
             while (elapsedTime < (long) ((widthLowe/goblinBalloon.getMovementSpeed())*300)) {
                 if (goblinBalloon.getHitPoints() <= 0){
                     isDied = true;
                     break;
+                }
+                try {
+                    wait(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 elapsedTime = System.currentTimeMillis() - startTime;
             }

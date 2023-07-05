@@ -23,6 +23,7 @@ import model.building.Tesla;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Attack extends Application {
     public Attack(Player attackingPlayer, Player defensivePlayer, ArrayList<Player> players) {
@@ -136,23 +137,24 @@ public class Attack extends Application {
 
 
         map.setOnMouseClicked(mouseEvent -> {
-            if (imageViewBalloon.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 10){
+                if (imageViewBalloon.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 10){
                 capacityInt.addAndGet(-10);
-                capacity.setText("Capacity : " + capacityInt);
-                new DefBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
-            } else if (imageViewArcher.getEffect() != null  && mouseEvent.getY() < 575 && capacityInt.get() >= 30){
+                    capacity.setText("Capacity : " + capacityInt);
+                    new DefBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
+                } else if (imageViewArcher.getEffect() != null  && mouseEvent.getY() < 575 && capacityInt.get() >= 30){
                 capacityInt.addAndGet(-30);
-                capacity.setText("Capacity : " + capacityInt);
-                new ArcherBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
-            } else if (imageViewGoblin.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 2){
+                    capacity.setText("Capacity : " + capacityInt);
+                    new ArcherBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
+                } else if (imageViewGoblin.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 2){
                 capacityInt.addAndGet(-2);
-                capacity.setText("Capacity : " + capacityInt);
-                new GoblinBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
-            } else if (imageViewDragon.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 20){
+                    capacity.setText("Capacity : " + capacityInt);
+                    new GoblinBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
+                } else if (imageViewDragon.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 20){
                 capacityInt.addAndGet(-20);
-                capacity.setText("Capacity : " + capacityInt);
-                new DragonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
-            }
+                    capacity.setText("Capacity : " + capacityInt);
+                    new DragonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
+                }
+//            }
             if (capacityInt.get() < 30){
                 map.getChildren().remove(imageViewArcher);
             }

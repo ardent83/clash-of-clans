@@ -44,6 +44,15 @@ public class DefBalloonAttack extends Thread {
                     break;
                 attack(building);
             }
+            Platform.runLater(() -> {
+                root.getChildren().remove(viewBalloon);
+                myNotify();
+            });
+            try {
+                wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             map.getAttackingHeroes().remove(defBalloon);
         }
     }
@@ -98,7 +107,7 @@ public class DefBalloonAttack extends Thread {
             transition.setNode(viewBalloon);
             transition.setAutoReverse(false);
             transition.setPath(path);
-            transition.play();
+            Platform.runLater(transition::play);
             long startTime = System.currentTimeMillis();
             long elapsedTime = 0;
             while (elapsedTime < (long) ((widthLowe/defBalloon.getMovementSpeed())*300)) {
@@ -106,6 +115,11 @@ public class DefBalloonAttack extends Thread {
                     isDied = true;
                     Platform.runLater(() -> root.getChildren().remove(viewBalloon));
                     break;
+                }
+                try {
+                    wait(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 elapsedTime = System.currentTimeMillis() - startTime;
             }

@@ -94,7 +94,7 @@ public class ArcherTowerDefense extends Thread {
                 pathTransition.setPath(path);
                 pathTransition.setCycleCount(1);
                 pathTransition.setNode(finalCircle);
-                pathTransition.play();
+                Platform.runLater(pathTransition::play);
                 hero.setHitPoints(hero.getHitPoints() - (archerTower.getDamagePerSecond()));
                 try {
                     wait(1000);

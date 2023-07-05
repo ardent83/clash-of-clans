@@ -7,7 +7,6 @@ import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import model.Map.Map;
-import model.building.ArcherTower;
 import model.building.InfernoTower;
 import model.hero.Hero;
 

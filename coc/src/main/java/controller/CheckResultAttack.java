@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Map.Map;
 import model.Player;
@@ -23,35 +24,27 @@ public class CheckResultAttack extends Thread {
         this.capacityInt = capacityInt;
         this.stage = stage;
         this.players = players;
-        this.starView = new ImageView();
-        starView.setX(231);
-        starView.setY(150);
-        starView.setFitWidth(537);
-        starView.setFitHeight(220);
-
-        this.viewBack = new ImageView();
-        viewBack.setX(450);
-        viewBack.setY(500);
-        viewBack.setFitWidth(100);
-        viewBack.setFitHeight(43);
+        this.newView();
     }
 
     private final Map map;
-    private final int firstSize;
+    private final double firstSize;
     private final AnchorPane root;
     private final AtomicInteger capacityInt;
     private final Player attackingPlayer;
     private final Player defensivePlayer;
     private final ArrayList<Player> players;
     private final Stage stage;
-    private final ImageView starView;
-    private final ImageView viewBack;
+    private ImageView starView;
+    private Text textPercent;
+    private ImageView viewBack;
 
     @Override
     public synchronized void run() {
         Platform.runLater(() -> {
             root.getChildren().add(viewBack);
             root.getChildren().add(starView);
+            root.getChildren().add(textPercent);
             viewBack.setOnMouseClicked(mouseEvent -> {
                 new PlayerPanel(attackingPlayer, players).start(new Stage());
                 stage.close();
@@ -87,6 +80,53 @@ public class CheckResultAttack extends Thread {
                 }
                 break;
             } else if (capacityInt.get() == 0 && map.getAttackingHeroes().size() == 0){
+                if ((map.getBuildingsMap().size()/firstSize) < 0.15){
+                    defensivePlayer.setNumberWin(defensivePlayer.getNumberWin()+1);
+                    attackingPlayer.setNumberLose(attackingPlayer.getNumberLose()+1);
+                    if (defensivePlayer.getLevel() < 4){
+                        defensivePlayer.setLevel(defensivePlayer.getLevel()+1);
+                    }
+                    if (attackingPlayer.getLevel() > 1){
+                        attackingPlayer.setLevel(attackingPlayer.getLevel()-1);
+                    }
+                    new UpdatePlayerData(attackingPlayer).start();
+                    new UpdatePlayerData(defensivePlayer).start();
+                    Platform.runLater(() -> {
+                        starView.setImage(new Image("star2.png"));
+                        viewBack.setImage(new Image("back_home.png"));
+                        textPercent.setText((100 - ((int)((map.getBuildingsMap().size()*100)/firstSize)))+ "%");
+                        myNotify();
+                    });
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                } else if ((map.getBuildingsMap().size()/firstSize) < 0.5){
+                    defensivePlayer.setNumberWin(defensivePlayer.getNumberWin()+1);
+                    attackingPlayer.setNumberLose(attackingPlayer.getNumberLose()+1);
+                    if (defensivePlayer.getLevel() < 4){
+                        defensivePlayer.setLevel(defensivePlayer.getLevel()+1);
+                    }
+                    if (attackingPlayer.getLevel() > 1){
+                        attackingPlayer.setLevel(attackingPlayer.getLevel()-1);
+                    }
+                    new UpdatePlayerData(attackingPlayer).start();
+                    new UpdatePlayerData(defensivePlayer).start();
+                    Platform.runLater(() -> {
+                        starView.setImage(new Image("star1.png"));
+                        viewBack.setImage(new Image("back_home.png"));
+                        textPercent.setText((100 - ((int)((map.getBuildingsMap().size()*100)/firstSize))) + "%");
+                        myNotify();
+                    });
+                    try {
+                        wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
                 defensivePlayer.setNumberWin(defensivePlayer.getNumberWin()+1);
                 attackingPlayer.setNumberLose(attackingPlayer.getNumberLose()+1);
                 if (defensivePlayer.getLevel() < 4){
@@ -98,7 +138,9 @@ public class CheckResultAttack extends Thread {
                 new UpdatePlayerData(attackingPlayer).start();
                 new UpdatePlayerData(defensivePlayer).start();
                 Platform.runLater(() -> {
-                    starView.setImage(new Image("star2.png"));
+                    starView.setImage(new Image("star0.png"));
+                    viewBack.setImage(new Image("back_home.png"));
+                    textPercent.setText((100 - ((int)((map.getBuildingsMap().size()*100)/firstSize))) + "%");
                     myNotify();
                 });
                 try {
@@ -117,5 +159,23 @@ public class CheckResultAttack extends Thread {
     }
     public synchronized void myNotify(){
         notify();
+    }
+    private void newView(){
+        this.starView = new ImageView();
+        starView.setX(231);
+        starView.setY(150);
+        starView.setFitWidth(537);
+        starView.setFitHeight(220);
+
+        this.textPercent = new Text();
+        textPercent.setId("text");
+        textPercent.setX(480);
+        textPercent.setY(240);
+
+        this.viewBack = new ImageView();
+        viewBack.setX(450);
+        viewBack.setY(500);
+        viewBack.setFitWidth(100);
+        viewBack.setFitHeight(43);
     }
 }

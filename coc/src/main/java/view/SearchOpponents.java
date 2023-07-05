@@ -85,6 +85,9 @@ public class SearchOpponents extends Application {
         imageViewNext.setFitHeight(50);
         imageViewNext.setOnMouseClicked(mouseEvent -> {
             if (players.size()-1 > count.get()){
+                if (players.get(count.get()).equals(player)) {
+                    count.addAndGet(1);
+                }
                 scene = new Scene(getMap(stage,players.get(count.addAndGet(1)).getMap().getMapView()), 1000, 737);
                 scene.getStylesheets().add("style.css");
                 stage.setScene(scene);
