@@ -5,6 +5,9 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -13,6 +16,8 @@ import model.Map.Map;
 import model.MyImageView;
 import model.building.Building;
 import model.hero.Dragon;
+
+import java.io.File;
 
 
 public class DragonAttack extends Thread {
@@ -28,6 +33,7 @@ public class DragonAttack extends Thread {
         dragon.setViewHero(viewDragon);
         this.map.getAttackingHeroes().add(dragon);
         this.isDied = false;
+        mediaPlayerAttack.setVolume(0.2);
     }
     private final AnchorPane root;
     private final ImageView viewDragonL;
@@ -38,10 +44,20 @@ public class DragonAttack extends Thread {
     private final Dragon dragon;
     private final Map map;
     private boolean isDied;
+    private final File audioFileAttack = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\fire.mp3");
+    private final String audioFilePathAttack = audioFileAttack.toURI().toString();
+    private final MediaPlayer mediaPlayerAttack = new MediaPlayer(new Media(audioFilePathAttack));
     @Override
     public void run() {
         synchronized (this){
+            File audioFile = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\fly.mp3");
+            String audioFilePath = audioFile.toURI().toString();
+            MediaPlayer mediaPlayer = new MediaPlayer(new Media(audioFilePath));
+            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setCycleCount(10000);
+            mediaPlayer.setVolume(0.3);
             Platform.runLater(() -> {
+                root.getChildren().addAll(new MediaView(mediaPlayer), new MediaView(mediaPlayerAttack));
                 root.getChildren().add(viewDragon);
                 myNotify();
             });
@@ -58,6 +74,7 @@ public class DragonAttack extends Thread {
             }
             Platform.runLater(() -> {
                 root.getChildren().remove(viewDragon);
+                mediaPlayer.stop();
                 myNotify();
             });
             try {
@@ -161,12 +178,14 @@ public class DragonAttack extends Thread {
                 isDied = true;
                 break;
             }
-            building.setHitPoints(building.getHitPoints()-dragon.getDamagePerSecond());
+            Platform.runLater(mediaPlayerAttack::play);
+            building.setHitPoints((int)(building.getHitPoints()-(dragon.getDamagePerSecond()*1.25)));
             try {
-                wait(1000);
+                wait(1250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            Platform.runLater(mediaPlayerAttack::stop);
         }
         if (!isDied){
             map.getBuildingsMap().remove(building);

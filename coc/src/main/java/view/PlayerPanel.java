@@ -6,35 +6,49 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.Map.Map;
-import model.Map.Map4;
 import model.Player;
 import model.hero.ArcherBalloon;
 import model.hero.DefBalloon;
 import model.hero.Dragon;
 import model.hero.GoblinBalloon;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class PlayerPanel extends Application {
     public PlayerPanel(Player player, ArrayList<Player> players) {
         this.player = player;
         this.players = players;
+        File audioFileDie = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\player_panel.mp3");
+        String audioFilePathDie = audioFileDie.toURI().toString();
+        mediaPlayer = new MediaPlayer(new Media(audioFilePathDie));
     }
 
     private final Player player;
     private final ArrayList<Player> players;
+    private final MediaPlayer mediaPlayer;
+    private final File audioFileClick = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\click_button.mp3");
+    private final String audioFilePath = audioFileClick.toURI().toString();
+    private final MediaPlayer mediaPlayerClick = new MediaPlayer(new Media(audioFilePath));
     @Override
     public void start(Stage stage) {
-        Scene scene = new Scene(root(stage), 1000, 737);
+        AnchorPane root = root(stage);
+        Scene scene = new Scene(root, 1000, 737);
         scene.getStylesheets().add("style.css");
         stage.setScene(scene);
         stage.setTitle("Home");
         stage.getIcons().add(new Image("icon.jpg"));
         stage.show();
         stage.setResizable(false);
+        mediaPlayer.setAutoPlay(true);
+        mediaPlayer.setCycleCount(100000);
+        mediaPlayer.play();
+        root.getChildren().addAll(new MediaView(mediaPlayer), new MediaView(mediaPlayerClick));
     }
 
     AnchorPane root(Stage stage){
@@ -46,7 +60,13 @@ public class PlayerPanel extends Application {
         attackView.setFitWidth(100);
         attackView.setFitHeight(100);
         attackView.setOnMouseClicked(mouseEvent -> {
-            new SearchOpponents(player, players).start(new Stage());
+            mediaPlayerClick.play();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            new SearchOpponents(player, players, mediaPlayer).start(new Stage());
             stage.close();
         });
         root.getChildren().add(attackView);
@@ -148,29 +168,64 @@ public class PlayerPanel extends Application {
         root.getChildren().addAll(infoPage, infoText, exitInfo);
 
         infoDragon.setOnMouseClicked(mouseEvent -> {
+            mediaPlayerClick.play();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            mediaPlayerClick.stop();
             infoPage.setImage(new Image("dragon_info.png"));
             infoText.setText(new Dragon(0, 0).toString());
             exitInfo.setImage(new Image("exit_info.png"));
         });
         infoBalloon.setOnMouseClicked(mouseEvent -> {
+            mediaPlayerClick.play();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             infoPage.setImage(new Image("balloon_info.png"));
             infoText.setText(new DefBalloon(0, 0).toString());
             exitInfo.setImage(new Image("exit_info.png"));
+            mediaPlayerClick.stop();
         });
         infoGoblin.setOnMouseClicked(mouseEvent -> {
+            mediaPlayerClick.play();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             infoPage.setImage(new Image("goblin_info.png"));
             infoText.setText(new GoblinBalloon(0, 0).toString());
             exitInfo.setImage(new Image("exit_info.png"));
+            mediaPlayerClick.stop();
         });
         infoArcher.setOnMouseClicked(mouseEvent -> {
+            mediaPlayerClick.play();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             infoPage.setImage(new Image("archer_info.png"));
             infoText.setText(new ArcherBalloon(0, 0).toString());
             exitInfo.setImage(new Image("exit_info.png"));
+            mediaPlayerClick.stop();
         });
         exitInfo.setOnMouseClicked(mouseEvent -> {
+            mediaPlayerClick.play();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             infoPage.setImage(null);
             infoText.setText(null);
             exitInfo.setImage(null);
+            mediaPlayerClick.stop();
         });
 
 

@@ -14,12 +14,16 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Map.*;
 import model.Player;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class SignUp extends Application {
@@ -35,6 +39,9 @@ public class SignUp extends Application {
     private final static ImageView imageView1 = new ImageView(new Image("map2.png"));
     private final static ImageView imageView2 = new ImageView(new Image("map3.png"));
     private final static ImageView imageView3 = new ImageView(new Image("map4.png"));
+    private final File audioFileClick = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\click_button.mp3");
+    private final String audioFilePath = audioFileClick.toURI().toString();
+    private final MediaPlayer mediaPlayerClick = new MediaPlayer(new Media(audioFilePath));
     @Override
     public void start(Stage stage) {
         BorderPane root = new BorderPane();
@@ -45,6 +52,7 @@ public class SignUp extends Application {
         scene.getStylesheets().add("style.css");
         stage.setScene(scene);
         stage.show();
+        root.getChildren().add(new MediaView(mediaPlayerClick));
     }
     private VBox vBoxFields(Stage stage){
         VBox vBox = new VBox();
@@ -60,6 +68,12 @@ public class SignUp extends Application {
         Button buttonSignUp = new Button("SignUp");
         buttonSignUp.setEffect(shadow);
         HBox hBoxMap = hBoxMaps();
+        File audioFile = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\home.mp3");
+        String audioFilePath = audioFile.toURI().toString();
+        MediaPlayer mediaPlayer = new MediaPlayer(new Media(audioFilePath));
+        mediaPlayer.setAutoPlay(true);
+        vBox.getChildren().add(new MediaView(mediaPlayer));
+
         buttonSignUp.setOnMouseClicked(mouseEvent -> {
             try {
                 Map map;
@@ -76,10 +90,17 @@ public class SignUp extends Application {
                 } else {
                     map = new Map4();
                 }
+                mediaPlayerClick.play();
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 Player player = new Player(textFieldID.getText(), textFieldPassword.getText(), map);
                 new SavePlayerData(player).start();
                 new PlayerPanel(player,players).start(new Stage());
                 stage.close();
+                mediaPlayer.stop();
             }
             catch (Exception e){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -91,8 +112,15 @@ public class SignUp extends Application {
         Button buttonLogin = new Button("Log In");
         buttonLogin.setEffect(shadow);
         buttonLogin.setOnMouseClicked(mouseEvent -> {
+            mediaPlayerClick.play();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             new LogIn(players).start(new Stage());
             stage.close();
+            mediaPlayer.stop();
         });
 
         HBox hBoxButton = new HBox(buttonLogin, buttonSignUp);
@@ -108,6 +136,8 @@ public class SignUp extends Application {
         text1.setStroke(Color.web("#FBFFDC"));
         text1.setFill(Color.web("#FBFFDC"));
         text1.setId("text");
+
+
 
         vBox.getChildren().addAll(text, textFieldID, textFieldPassword, text1, hBoxMap, hBoxButton);
 

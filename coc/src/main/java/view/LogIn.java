@@ -11,16 +11,23 @@ import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Player;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class LogIn extends Application {
     private final ArrayList<Player> players;
     private final LogInController controller;
+    private final File audioFileClick = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\click_button.mp3");
+    private final String audioFilePath = audioFileClick.toURI().toString();
+    private final MediaPlayer mediaPlayerClick = new MediaPlayer(new Media(audioFilePath));
 
     public LogIn(ArrayList<Player> players) {
         this.players = players;
@@ -32,12 +39,14 @@ public class LogIn extends Application {
         BorderPane root = new BorderPane();
         root.setBackground(new Background(new BackgroundImage(new Image("poster1.jpg"),BackgroundRepeat.NO_REPEAT,BackgroundRepeat.NO_REPEAT,BackgroundPosition.CENTER,BackgroundSize.DEFAULT)));
         root.setCenter(vBoxFields(stage));
-
         Scene scene = new Scene(root,400,300);
         stage.setScene(scene);
         scene.getStylesheets().add("style.css");
+        stage.setTitle("Log in");
+        stage.getIcons().add(new Image("icon.jpg"));
         stage.show();
         stage.setResizable(false);
+        root.getChildren().add(new MediaView(mediaPlayerClick));
     }
     private final static DropShadow shadow = new DropShadow(20, Color.web("#000000"));
     private VBox vBoxFields(Stage stage){
@@ -55,8 +64,15 @@ public class LogIn extends Application {
         Button buttonLogin = new Button("Log In");
         buttonLogin.setEffect(shadow);
         buttonLogin.setOnMouseClicked(mouseEvent -> {
+            mediaPlayerClick.play();
             try {
                 Player player = controller.getPlayer(textFieldID.getText(), textFieldPassword.getText());
+                mediaPlayerClick.play();
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 new PlayerPanel(player, players).start(new Stage());
                 stage.close();
             } catch (Exception e) {
@@ -69,8 +85,14 @@ public class LogIn extends Application {
         Button buttonSignUp = new Button("Sign Up");
         buttonSignUp.setEffect(shadow);
         buttonSignUp.setOnMouseClicked(mouseEvent -> {
-            new SignUp(players).start(new Stage());
+            mediaPlayerClick.play();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             stage.close();
+            new SignUp(players).start(new Stage());
         });
 
         HBox hBoxButton = new HBox(buttonSignUp, buttonLogin);

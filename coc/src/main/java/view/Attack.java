@@ -12,6 +12,9 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -21,6 +24,7 @@ import model.building.ArcherTower;
 import model.building.InfernoTower;
 import model.building.Tesla;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -43,7 +47,13 @@ public class Attack extends Application {
         stage.getIcons().add(new Image("icon.jpg"));
         stage.setTitle("Attack");
         stage.setResizable(false);
-        new CheckResultAttack(stage, root, attackingPlayer, defensivePlayer, capacityInt, players).start();
+        File audioFile = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\attack_audio.mp3");
+        String audioFilePath = audioFile.toURI().toString();
+        MediaPlayer mediaPlayer = new MediaPlayer(new Media(audioFilePath));
+        mediaPlayer.setAutoPlay(true);
+        mediaPlayer.setVolume(0.12);
+        root.getChildren().add(new MediaView(mediaPlayer));
+        new CheckResultAttack(stage, root, attackingPlayer, defensivePlayer, capacityInt, players, mediaPlayer).start();
         synchronized (this){
             for (Node building : defensivePlayer.getMap().getBuildingsMap()){
                 if (building instanceof InfernoTower){
@@ -72,20 +82,26 @@ public class Attack extends Application {
         imageViewDragon.setFitWidth(79);
         imageViewDragon.setFitHeight(84);
 
+        ImageView imageViewPanda = new ImageView("panda_drag.png");
+        imageViewPanda.setX(110);
+        imageViewPanda.setY(642);
+        imageViewPanda.setFitWidth(80);
+        imageViewPanda.setFitHeight(83);
+
         ImageView imageViewBalloon = new ImageView("balloon_drag.png");
-        imageViewBalloon.setX(110);
+        imageViewBalloon.setX(200);
         imageViewBalloon.setY(642);
         imageViewBalloon.setFitWidth(80);
         imageViewBalloon.setFitHeight(85);
 
         ImageView imageViewGoblin = new ImageView("goblin_drag.png");
-        imageViewGoblin.setX(200);
+        imageViewGoblin.setX(290);
         imageViewGoblin.setY(642);
         imageViewGoblin.setFitWidth(80);
         imageViewGoblin.setFitHeight(85);
 
         ImageView imageViewArcher = new ImageView("archer_drag.png");
-        imageViewArcher.setX(290);
+        imageViewArcher.setX(380);
         imageViewArcher.setY(642);
         imageViewArcher.setFitWidth(80);
         imageViewArcher.setFitHeight(85);
@@ -110,7 +126,7 @@ public class Attack extends Application {
             imageViewArcher.setEffect(null);
             imageViewGoblin.setEffect(null);
             imageViewDragon.setEffect(null);
-
+            imageViewPanda.setEffect(null);
         });
 
         imageViewArcher.setOnMouseClicked(mouseEvent -> {
@@ -118,7 +134,7 @@ public class Attack extends Application {
             imageViewArcher.setEffect(shadow);
             imageViewGoblin.setEffect(null);
             imageViewDragon.setEffect(null);
-
+            imageViewPanda.setEffect(null);
         });
 
         imageViewGoblin.setOnMouseClicked(mouseEvent -> {
@@ -126,6 +142,7 @@ public class Attack extends Application {
             imageViewArcher.setEffect(null);
             imageViewGoblin.setEffect(shadow);
             imageViewDragon.setEffect(null);
+            imageViewPanda.setEffect(null);
         });
 
         imageViewDragon.setOnMouseClicked(mouseEvent -> {
@@ -133,28 +150,46 @@ public class Attack extends Application {
             imageViewArcher.setEffect(null);
             imageViewGoblin.setEffect(null);
             imageViewDragon.setEffect(shadow);
+            imageViewPanda.setEffect(null);
         });
+
+        imageViewPanda.setOnMouseClicked(mouseEvent -> {
+            imageViewBalloon.setEffect(null);
+            imageViewArcher.setEffect(null);
+            imageViewGoblin.setEffect(null);
+            imageViewDragon.setEffect(null);
+            imageViewPanda.setEffect(shadow);
+        });
+
+//        imageViewGoblin.setOnMouseDragged(mouseEvent -> {
+//            capacityInt.addAndGet(1);
+//            capacity.setText("Capacity : " + capacityInt);
+//            new GoblinBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
+//        });
 
 
         map.setOnMouseClicked(mouseEvent -> {
                 if (imageViewBalloon.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 10){
-                capacityInt.addAndGet(-10);
+                    capacityInt.addAndGet(-10);
                     capacity.setText("Capacity : " + capacityInt);
                     new DefBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
                 } else if (imageViewArcher.getEffect() != null  && mouseEvent.getY() < 575 && capacityInt.get() >= 30){
-                capacityInt.addAndGet(-30);
+                    capacityInt.addAndGet(-30);
                     capacity.setText("Capacity : " + capacityInt);
                     new ArcherBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
                 } else if (imageViewGoblin.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 2){
-                capacityInt.addAndGet(-2);
+                    capacityInt.addAndGet(-2);
                     capacity.setText("Capacity : " + capacityInt);
                     new GoblinBalloonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
                 } else if (imageViewDragon.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 20){
-                capacityInt.addAndGet(-20);
+                    capacityInt.addAndGet(-20);
                     capacity.setText("Capacity : " + capacityInt);
                     new DragonAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
+                } else if (imageViewPanda.getEffect() != null && mouseEvent.getY() < 575 && capacityInt.get() >= 10){
+                    capacityInt.addAndGet(-10);
+                    capacity.setText("Capacity : " + capacityInt);
+                    new PandaAttack(mouseEvent.getX(), mouseEvent.getY(), map, defensivePlayer.getMap()).start();
                 }
-//            }
             if (capacityInt.get() < 30){
                 map.getChildren().remove(imageViewArcher);
             }
@@ -163,6 +198,7 @@ public class Attack extends Application {
             }
             if (capacityInt.get() < 10){
                 map.getChildren().remove(imageViewBalloon);
+                map.getChildren().remove(imageViewPanda);
             }
             if (capacityInt.get() < 2){
                 map.getChildren().remove(imageViewGoblin);
@@ -172,13 +208,13 @@ public class Attack extends Application {
         map.getChildren().addAll(rectangle, imageViewCapacity, capacity);
 
         if (attackingPlayer.getLevel() == 1){
-            map.getChildren().add(imageViewDragon);
+            map.getChildren().addAll(imageViewDragon, imageViewPanda);
         } else if (attackingPlayer.getLevel() == 2){
-            map.getChildren().addAll(imageViewDragon, imageViewBalloon);
+            map.getChildren().addAll(imageViewDragon,imageViewPanda, imageViewBalloon);
         } else if (attackingPlayer.getLevel() == 3){
-            map.getChildren().addAll(imageViewDragon, imageViewBalloon, imageViewGoblin);
+            map.getChildren().addAll(imageViewDragon, imageViewPanda, imageViewBalloon, imageViewGoblin);
         } else if (attackingPlayer.getLevel() == 4){
-            map.getChildren().addAll(imageViewBalloon, imageViewGoblin, imageViewArcher, imageViewDragon);
+            map.getChildren().addAll(imageViewBalloon, imageViewPanda, imageViewGoblin, imageViewArcher, imageViewDragon);
         }
         return map;
     }

@@ -5,6 +5,9 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.LineTo;
@@ -15,6 +18,8 @@ import model.Map.Map;
 import model.MyImageView;
 import model.building.Building;
 import model.hero.ArcherBalloon;
+
+import java.io.File;
 
 public class ArcherBalloonAttack extends Thread {
     public ArcherBalloonAttack(double x, double y, AnchorPane root, Map map) {
@@ -38,7 +43,13 @@ public class ArcherBalloonAttack extends Thread {
     @Override
     public void run() {
         synchronized (this){
+            File audioFile = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\balloonDeploy.mp3");
+            String audioFilePath = audioFile.toURI().toString();
+            MediaPlayer mediaPlayer = new MediaPlayer(new Media(audioFilePath));
+            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setVolume(0.5);
             Platform.runLater(() -> {
+                root.getChildren().add(new MediaView(mediaPlayer));
                 root.getChildren().add(viewBalloon);
                 myNotify();
             });
@@ -53,8 +64,14 @@ public class ArcherBalloonAttack extends Thread {
                     break;
                 attack(building);
             }
+            File audioFileDie = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\balloonDie.mp3");
+            String audioFilePathDie = audioFileDie.toURI().toString();
+            MediaPlayer mediaPlayerDie = new MediaPlayer(new Media(audioFilePathDie));
+            mediaPlayerDie.setAutoPlay(true);
+            mediaPlayerDie.setVolume(0.5);
             Platform.runLater(() -> {
                 root.getChildren().remove(viewBalloon);
+                root.getChildren().add(new MediaView(mediaPlayerDie));
                 myNotify();
             });
             try {
@@ -81,24 +98,23 @@ public class ArcherBalloonAttack extends Thread {
                 }
             }
         }
-        for (Node node : map.getBuildingsMap()){
-            if (node instanceof Building){
-                double[] nearestPoint = nearestPointOnCircle(((Building) node).getImageView().getX()+(((Building) node).getImageView().getFitWidth()/2),
-                        ((Building) node).getImageView().getY()+(((Building) node).getImageView().getFitHeight()/2),
-                        archerBalloon.getRang(), viewBalloon.getX()+(viewBalloon.getFitWidth()/2),
-                        viewBalloon.getY()+(viewBalloon.getFitHeight()/2));
-                width = distance(viewBalloon.getX()+(viewBalloon.getFitWidth()/2), viewBalloon.getY()+(viewBalloon.getFitHeight()/2),
-                                    nearestPoint[0], nearestPoint[1]);
-
-                if (width < widthLowe) {
-                    widthLowe = width;
-                    building = (Building) node;
-                    nearestPointLineTo = nearestPoint;
-                    insideRadius = false;
+        if (archerBalloon.getRang() < widthLowe && building != null){
+            for (Node node : map.getBuildingsMap()){
+                if (node instanceof Building){
+                    double[] nearestPoint = nearestPointOnCircle(((Building) node).getImageView().getX()+(((Building) node).getImageView().getFitWidth()/2),
+                            ((Building) node).getImageView().getY()+(((Building) node).getImageView().getFitHeight()/2),
+                            archerBalloon.getRang(), viewBalloon.getX()+(viewBalloon.getFitWidth()/2),
+                            viewBalloon.getY()+(viewBalloon.getFitHeight()/2));
+                    width = distance(viewBalloon.getX()+(viewBalloon.getFitWidth()/2), viewBalloon.getY()+(viewBalloon.getFitHeight()/2),
+                            nearestPoint[0], nearestPoint[1]);
+                    if (width < widthLowe) {
+                        widthLowe = width;
+                        building = (Building) node;
+                        nearestPointLineTo = nearestPoint;
+                        insideRadius = false;
+                    }
                 }
             }
-        }
-        if (building != null && !insideRadius){
             MoveTo moveTo = new MoveTo(viewBalloon.getX(), viewBalloon.getY());
             LineTo lineTo = new LineTo(nearestPointLineTo[0], nearestPointLineTo[1]);
             Path path = new Path();
@@ -109,7 +125,7 @@ public class ArcherBalloonAttack extends Thread {
             transition.setNode(viewBalloon);
             transition.setAutoReverse(false);
             transition.setPath(path);
-            transition.play();
+            Platform.runLater(transition::play);
             long startTime = System.currentTimeMillis();
             long elapsedTime = 0;
             while (elapsedTime < (long) ((widthLowe/archerBalloon.getMovementSpeed())*300)) {
@@ -170,7 +186,7 @@ public class ArcherBalloonAttack extends Thread {
             pathTransition.setPath(path);
             pathTransition.setCycleCount(1);
             pathTransition.setNode(circle);
-            pathTransition.play();
+            Platform.runLater(pathTransition::play);
             building.setHitPoints(building.getHitPoints()-archerBalloon.getDamagePerSecond());
             try {
                 wait(1000);
@@ -222,8 +238,9 @@ public class ArcherBalloonAttack extends Thread {
             double b = -2 * cx + 2 * m1 * (intercept - cy);
             double c = Math.pow(cx, 2) + Math.pow(intercept - cy, 2) - Math.pow(r, 2);
 
-            double x1 = (-b + Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
-            double x2 = (-b - Math.sqrt(Math.pow(b, 2) - 4 * a * c)) / (2 * a);
+            final double sqrt = Math.sqrt(Math.pow(b, 2) - 4 * a * c);
+            double x1 = (-b + sqrt) / (2 * a);
+            double x2 = (-b - sqrt) / (2 * a);
 
             double y1 = m1 * x1 + intercept;
             double y2 = m1 * x2 + intercept;

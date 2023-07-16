@@ -5,6 +5,9 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -13,6 +16,8 @@ import model.Map.Map;
 import model.MyImageView;
 import model.building.Building;
 import model.hero.GoblinBalloon;
+
+import java.io.File;
 
 public class GoblinBalloonAttack extends Thread {
     public GoblinBalloonAttack(double x, double y, AnchorPane root, Map map) {
@@ -37,7 +42,13 @@ public class GoblinBalloonAttack extends Thread {
     @Override
     public void run() {
         synchronized (this){
+            File audioFile = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\balloonDeploy.mp3");
+            String audioFilePath = audioFile.toURI().toString();
+            MediaPlayer mediaPlayer = new MediaPlayer(new Media(audioFilePath));
+            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setVolume(0.5);
             Platform.runLater(() -> {
+                root.getChildren().add(new MediaView(mediaPlayer));
                 root.getChildren().add(viewBalloon);
                 myNotify();
             });
@@ -52,8 +63,14 @@ public class GoblinBalloonAttack extends Thread {
                     break;
                 attack(building);
             }
+            File audioFileDie = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\balloonDie.mp3");
+            String audioFilePathDie = audioFileDie.toURI().toString();
+            MediaPlayer mediaPlayerDie = new MediaPlayer(new Media(audioFilePathDie));
+            mediaPlayerDie.setAutoPlay(true);
+            mediaPlayerDie.setVolume(0.5);
             Platform.runLater(() -> {
                 root.getChildren().remove(viewBalloon);
+                root.getChildren().add(new MediaView(mediaPlayerDie));
                 myNotify();
             });
             try {

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class Map4 extends Map {
     public Map4() {
         super(4);
-        this.capacityMap4 = 100;
+        this.capacityMap4 = 160;
         this.buildingsMap4 = new ArrayList<>();
         this.buildMap();
     }

@@ -5,6 +5,9 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
@@ -13,6 +16,8 @@ import model.Map.Map;
 import model.MyImageView;
 import model.building.Building;
 import model.hero.DefBalloon;
+
+import java.io.File;
 
 public class DefBalloonAttack extends Thread {
     public DefBalloonAttack(double x, double y, AnchorPane root, Map map) {
@@ -25,7 +30,6 @@ public class DefBalloonAttack extends Thread {
         defBalloon.setViewHero(viewBalloon);
         this.map.getAttackingHeroes().add(defBalloon);
         this.isDied = false;
-        Platform.runLater(() -> root.getChildren().add(viewBalloon));
     }
     private final AnchorPane root;
     private final ImageView viewBalloonAttack;
@@ -38,14 +42,29 @@ public class DefBalloonAttack extends Thread {
     @Override
     public void run() {
         synchronized (this){
+            File audioFile = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\balloonDeploy.mp3");
+            String audioFilePath = audioFile.toURI().toString();
+            MediaPlayer mediaPlayer = new MediaPlayer(new Media(audioFilePath));
+            mediaPlayer.setAutoPlay(true);
+            mediaPlayer.setVolume(0.5);
+            Platform.runLater(() -> {
+                root.getChildren().add(new MediaView(mediaPlayer));
+                root.getChildren().add(viewBalloon);
+            });
             while (!isDied){
                 Building building = moveToward();
                 if (isDied)
                     break;
                 attack(building);
             }
+            File audioFileDie = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\balloonDie.mp3");
+            String audioFilePathDie = audioFileDie.toURI().toString();
+            MediaPlayer mediaPlayerDie = new MediaPlayer(new Media(audioFilePathDie));
+            mediaPlayerDie.setAutoPlay(true);
+            mediaPlayerDie.setVolume(0.5);
             Platform.runLater(() -> {
                 root.getChildren().remove(viewBalloon);
+                root.getChildren().add(new MediaView(mediaPlayerDie));
                 myNotify();
             });
             try {

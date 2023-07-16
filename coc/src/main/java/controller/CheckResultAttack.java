@@ -5,17 +5,21 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.Map.Map;
 import model.Player;
 import view.PlayerPanel;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CheckResultAttack extends Thread {
-    public CheckResultAttack(Stage stage, AnchorPane root, Player attackingPlayer, Player defensivePlayer, AtomicInteger capacityInt, ArrayList<Player> players) {
+    public CheckResultAttack(Stage stage, AnchorPane root, Player attackingPlayer, Player defensivePlayer, AtomicInteger capacityInt, ArrayList<Player> players, MediaPlayer mediaPlayer) {
         this.map = defensivePlayer.getMap();
         this.firstSize = defensivePlayer.getMap().getBuildingsMap().size();
         this.root = root;
@@ -25,6 +29,7 @@ public class CheckResultAttack extends Thread {
         this.stage = stage;
         this.players = players;
         this.newView();
+        this.mediaPlayer = mediaPlayer;
     }
 
     private final Map map;
@@ -38,15 +43,28 @@ public class CheckResultAttack extends Thread {
     private ImageView starView;
     private Text textPercent;
     private ImageView viewBack;
+    private final MediaPlayer mediaPlayer;
+    private final File audioFileClick = new File("D:\\javacode\\final-project-game-ardent\\coc\\src\\main\\resources\\click_button.mp3");
+    private final String audioFilePath = audioFileClick.toURI().toString();
+    private final MediaPlayer mediaPlayerClick = new MediaPlayer(new Media(audioFilePath));
 
     @Override
     public synchronized void run() {
         Platform.runLater(() -> {
+            root.getChildren().add(new MediaView(mediaPlayerClick));
             root.getChildren().add(viewBack);
             root.getChildren().add(starView);
             root.getChildren().add(textPercent);
             viewBack.setOnMouseClicked(mouseEvent -> {
+                Platform.runLater(mediaPlayerClick::play);
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(mediaPlayerClick::stop);
                 new PlayerPanel(attackingPlayer, players).start(new Stage());
+                Platform.runLater(mediaPlayer::stop);
                 stage.close();
             });
             myNotify();
