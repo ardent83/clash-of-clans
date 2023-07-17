@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/TNT.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/ah.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/attack_audio.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/balloonDeploy.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/balloonDie.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/balloon_7.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/battle_win.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/bwtf.mp3" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/classic.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/click_button.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/copy.png" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/download.gif" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/enter_panda.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/exp.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/exp1.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/fire.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/fly.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/home.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/mio.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/not_path.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/pandaAttakL.gif" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/pandaAttakR.gif" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/pandaL.gif" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/pandaR.gif" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/player_panel.mp3" charset="windows-1252" />
+    <file url="file://$PROJECT_DIR$/src/main/resources/sia.mp3" charset="windows-1252" />
+    <file url="PROJECT" charset="windows-1252" />
+  </component>
+</project>
